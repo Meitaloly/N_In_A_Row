@@ -13,13 +13,14 @@ public class Test {
 
 
     public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        String s = "D:/JavaProj/Ex1/ex1-error.xml";
-        //scan.nextLine();
-        System.out.println(s);
+        Scanner s = new Scanner(System.in);
+        //String s = "D:/JavaProj/Ex1/ex1-error.xml";
+        String str = s.nextLine();
+        System.out.println(str);
         // InputStream input = Test.class.getClass().getResourceAsStream(s);
+        int i = 0;
         try {
-            GameDescriptor desc = parseXmltoJaxbMachine("D:/JavaProj/Ex1/ex1-error.xml");
+            GameDescriptor desc = parseXmltoJaxbMachine(str);
             System.out.println(desc);
             System.out.print(desc.getGame().getBoard().getColumns());
         } catch (JAXBException e) {
@@ -30,7 +31,7 @@ public class Test {
     public static GameDescriptor parseXmltoJaxbMachine(String filePath) throws JAXBException {
         Unmarshaller jaxbUnmarshaller = null;
         GameDescriptor jaxbEnigma = null;
-        File xmlFilePath = new File("D:/JavaProj/Ex1/ex1-error.xml");
+        File xmlFilePath = new File(filePath);
         JAXBContext jaxbContext = null;
         jaxbContext = JAXBContext.newInstance(GameDescriptor.class);
         jaxbUnmarshaller = jaxbContext.createUnmarshaller();
