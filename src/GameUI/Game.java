@@ -10,10 +10,14 @@ public class Game {
     }
 
     public void start() {
-        int userChoice = 0;
         System.out.println("Please choose one of the following options:");
-
         menu.printMenu();
+        getUserMenuChoice();
+    }
+
+    public void getUserMenuChoice()
+    {
+        int userChoice = 0;
 
         do {
             userChoice = getInputFromUser();
