@@ -23,6 +23,8 @@ public class Menu {
     public void printMenu()
     {
         int write =1;
+        System.out.println();
+        System.out.println("Please choose one of the following options:");
         for(String s: menu)
         {
             System.out.println(write+ ") "+s);

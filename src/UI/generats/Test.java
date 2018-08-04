@@ -1,12 +1,11 @@
 package UI.generats;
 
+import LogicEngine.generatedClasses.GameDescriptor;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Test {
@@ -19,16 +18,16 @@ public class Test {
         System.out.println(str);
         // InputStream input = Test.class.getClass().getResourceAsStream(s);
         int i = 0;
-        try {
-            GameDescriptor desc = parseXmltoJaxbMachine(str);
-            System.out.println(desc);
-            System.out.print(desc.getGame().getBoard().getColumns());
+       /* try {
+            //GameDescriptor desc = parseXmltoJaxbMachine(str);
+            //System.out.println(desc);
+            //System.out.print(desc.getGame().getBoard().getColumns());
         } catch (JAXBException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
-    public static GameDescriptor parseXmltoJaxbMachine(String filePath) throws JAXBException {
+    /*public static GameDescriptor parseXmltoJaxbMachine(String filePath) throws JAXBException {
         Unmarshaller jaxbUnmarshaller = null;
         GameDescriptor jaxbEnigma = null;
         File xmlFilePath = new File(filePath);
@@ -38,6 +37,6 @@ public class Test {
         jaxbEnigma = (GameDescriptor) jaxbUnmarshaller.unmarshal(xmlFilePath);
         return jaxbEnigma;
 
-    }
+    }*/
 }
 
