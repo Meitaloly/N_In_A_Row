@@ -6,7 +6,7 @@
 //
 
 
-package UI.generats;
+package LogicEngine.generatedClasses;
 
 import java.util.ArrayList;
 import java.util.List;

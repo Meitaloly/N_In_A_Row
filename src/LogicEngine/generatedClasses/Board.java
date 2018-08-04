@@ -6,7 +6,7 @@
 //
 
 
-package UI.generats;
+package LogicEngine.generatedClasses;
 
 import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
