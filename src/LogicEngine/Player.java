@@ -1,4 +1,4 @@
-package GameUI;
+package LogicEngine;
 
 public class Player {
     private Integer id;
@@ -51,5 +51,10 @@ public class Player {
 
     public int getTurnCounter() {
         return turnCounter;
+    }
+
+    public void restNumOfTurns()
+    {
+        turnCounter = 0;
     }
 }
