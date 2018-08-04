@@ -1,8 +1,6 @@
 package GameUI;
 
-import LogicEngine.GameBoard;
-import LogicEngine.GameTimer;
-import LogicEngine.XmlFileUtils;
+import LogicEngine.*;
 
 import java.util.*;
 
@@ -11,7 +9,7 @@ public class Game {
     GameBoard gameBoard;
     XmlFileUtils XFU;
     boolean activeGame = false;
-    Map<Integer, Player> players;
+    Players players;
     int turnIndex = 0;
     GameTimer gameTimer;
     Timer timer;
@@ -25,7 +23,7 @@ public class Game {
         timer = new Timer();
         menu.printMenu();
         gameBoard = new GameBoard();
-        players = new HashMap<>();
+        players = new Players();
         getUserMenuChoice();
     }
 
@@ -64,6 +62,16 @@ public class Game {
                 break;
             }
             case 2: {
+                System.out.println();
+                System.out.println("Starting a new game :)");
+                if(activeGame)
+                {
+                    timer.cancel();
+                    gameTimer.cancel();
+                    timer = new Timer();
+                    gameTimer = new GameTimer();
+                    players.rest();
+                }
                 activeGame = true;
                 timer.schedule(gameTimer, 0, 1000);
                 getPlayersTypeFromUser();
@@ -76,9 +84,9 @@ public class Game {
                 printBoard();
                 if(activeGame)
                 {
-                    Player currPlayer = getNameOfCurrPlayer();
+                    Player currPlayer = players.getCurrPlayer(turnIndex);
                     System.out.println("it's " + currPlayer.getName() + " turn");
-                    for(Player player: players.values()) {
+                    for(Player player: players.getPlayers().values()) {
                         System.out.println("The sign of " + player.getName() + " is: " + player.getPlayerSign());
                         System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
                     }
@@ -86,14 +94,58 @@ public class Game {
                     menu.printMenu();
                     getUserMenuChoice();
                 }
+            break;
             }
+            case 4:
+            {
+                if(activeGame) {
+                    if (players.isComputerTurn(turnIndex)) {
+                        players.computerPlays(gameBoard);
+                        printBoard();
+                        menu.printMenu();
+                        getUserMenuChoice();
+                    }
+                    else
+                    {
+                        Player currPlayer = players.getCurrPlayer(turnIndex);
+                        int userInput = getTurnInputFromUser(currPlayer);
+                        gameBoard.setSignOnBoard(userInput,currPlayer);
+                    }
+                    if (gameBoard.getNumOfFreePlaces() == 0) {
+                        System.out.println("No one won - the board is full!");
+                        activeGame= false;
+                        menu.printMenu();
+                        getUserMenuChoice();
+                    }
+                }
+                break;
+            }
+
         }
     }
 
-    public Player getNameOfCurrPlayer()
+    public int getTurnInputFromUser(Player currPlayer)
     {
-        return players.get(turnIndex);
+        int colNum;
+        boolean stop = false;
+        do {
+            System.out.println("Please choose a col you want to enter your " + currPlayer.getPlayerSign());
+            colNum = getInputFromUser(1, (int) gameBoard.getCols() - 1);
+            if(colNum != 0)
+            {
+                if(gameBoard.checkIfAvaliable(colNum))
+                {
+                    System.out.println("the col " + colNum + " is full!");
+                }
+                else
+                {
+                    stop = true;
+                }
+            }
+        }while(!stop);
+        return colNum;
     }
+
 
     public void getPlayersTypeFromUser(){
         boolean choseComputer = false;
@@ -125,7 +177,7 @@ public class Game {
                 System.out.println("Player" + (i+1) + " is Setted up!");
                 player.setPlayerType(1); // player is human
             }
-            players.put(i,player);
+            players.setNewPlayer(i,player);
         }
 
     }
@@ -142,9 +194,9 @@ public class Game {
                     if (board[i][j] == 0) {
                         System.out.print("   " + "|");
                     } else {
-                        if (board[i][j] == 100) {
+                        if (board[i][j] == 35) {
                             System.out.print(" # " + "|");
-                        } else if (board[i][j] == 200) {
+                        } else if (board[i][j] == 64) {
                             System.out.print(" @ " + "|");
                         } else {
                             if (i > 9 || j > 9) {
@@ -215,13 +267,13 @@ public class Game {
             num = Integer.parseInt(res);
             if(num < min || num > max){
                 System.out.println("Invalid input - NUMBER NOT IN RANGE!)");
-                System.out.println("Please enter a number between 1 to 6: ");
+                System.out.println("Please enter a number between "+min +"to" + max+":");
                 num = 0;
             }
         }
         catch(Exception e) {
             System.out.println("Invalid input - YOU MUST ENTER A NUMBER!");
-            System.out.println("Please enter a number between"+ min +"to" + max+":");
+            System.out.println("Please enter a number between "+ min +"to" + max+":");
         }
         finally{
             return num;
