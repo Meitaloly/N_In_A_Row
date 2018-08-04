@@ -36,9 +36,11 @@ public class Players {
         boolean res = false;
         for(Player player: players.values())
         {
-            if(player.getPlayerType() == 2) // computer
-            {
-                res = true;
+            if(player.getId() == turnIndex) {
+                if (player.getPlayerType() == 2) // computer
+                {
+                    res = true;
+                }
             }
         }
         return res;

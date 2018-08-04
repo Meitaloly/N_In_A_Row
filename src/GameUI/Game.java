@@ -98,18 +98,34 @@ public class Game {
             }
             case 4:
             {
+                boolean isWinner;
                 if(activeGame) {
                     if (players.isComputerTurn(turnIndex)) {
                         players.computerPlays(gameBoard);
+                        isWinner = gameBoard.checkPlayerWin();
+                        if(isWinner)
+                        {
+                            System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
+                        }
+                        changeTurn();
                         printBoard();
                         menu.printMenu();
                         getUserMenuChoice();
                     }
-                    else
+                    else // not computer
                     {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput,currPlayer);
+                        isWinner = gameBoard.checkPlayerWin();
+                        if(isWinner)
+                        {
+                            System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
+                        }
+                        changeTurn();
+                        printBoard();
+                        menu.printMenu();
+                        getUserMenuChoice();
                     }
                     if (gameBoard.getNumOfFreePlaces() == 0) {
                         System.out.println("No one won - the board is full!");
@@ -124,6 +140,11 @@ public class Game {
         }
     }
 
+    public void changeTurn()
+    {
+        turnIndex = (turnIndex + 1) % 2;
+    }
+
     public int getTurnInputFromUser(Player currPlayer)
     {
         int colNum;
@@ -133,7 +154,7 @@ public class Game {
             colNum = getInputFromUser(1, (int) gameBoard.getCols() - 1);
             if(colNum != 0)
             {
-                if(gameBoard.checkIfAvaliable(colNum))
+                if(!gameBoard.checkIfAvaliable(colNum))
                 {
                     System.out.println("the col " + colNum + " is full!");
                 }

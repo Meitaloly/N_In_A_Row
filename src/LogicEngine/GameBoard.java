@@ -73,4 +73,11 @@ public class GameBoard {
         }
         return res;
     }
+
+    public boolean checkPlayerWin()
+    {
+        boolean res = false;
+        // check if won
+        return res;
+    }
 }
