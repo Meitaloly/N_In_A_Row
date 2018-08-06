@@ -5,14 +5,14 @@ import LogicEngine.*;
 import java.util.*;
 
 public class Game {
-    Menu menu;
-    GameBoard gameBoard;
-    XmlFileUtils XFU;
-    boolean activeGame = false;
-    Players players;
-    int turnIndex = 0;
-    GameTimer gameTimer;
-    Timer timer;
+     Menu menu;
+     GameBoard gameBoard;
+     XmlFileUtils XFU;
+     boolean activeGame = false;
+     Players players;
+     int turnIndex = 0;
+     GameTimer gameTimer;
+     Timer timer;
 
     public Game() {
         menu = new Menu();
@@ -118,6 +118,16 @@ public class Game {
                         getUserMenuChoice();
                     }
                 }
+                break;
+            }
+            case 5:
+            {
+                // TODO: call print history function
+                break;
+            }
+            case 6:
+            {
+                //TODO: save game to file and exit
                 break;
             }
 
