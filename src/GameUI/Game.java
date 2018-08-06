@@ -159,7 +159,7 @@ public class Game {
                         Scanner inputPath = new Scanner(System.in);
                         String path = inputPath.nextLine();
                         String newFile = path + " game 1.txt";
-                        // todo : save gamr to file 
+                         
                     }
                 }
 
