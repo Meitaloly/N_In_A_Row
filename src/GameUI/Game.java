@@ -5,17 +5,19 @@ import LogicEngine.*;
 import java.util.*;
 
 public class Game {
-     Menu menu;
-     GameBoard gameBoard;
-     XmlFileUtils XFU;
-     boolean activeGame = false;
-     Players players;
-     int turnIndex = 0;
-     GameTimer gameTimer;
-     Timer timer;
+    private Menu menu;
+    private GameBoard gameBoard;
+    private XmlFileUtils XFU;
+    private boolean activeGame = false;
+    private Players players;
+    private int turnIndex = 0;
+    private GameTimer gameTimer;
+    private Timer timer;
+    private GameHistory history;
 
     public Game() {
         menu = new Menu();
+        history = new GameHistory();
     }
 
     public void start() {
@@ -101,7 +103,8 @@ public class Game {
                 boolean isWinner;
                 if(activeGame) {
                     if (players.isComputerTurn(turnIndex)) {
-                        players.computerPlays(gameBoard);
+                        int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
+                        history.addToHistory(players.getCurrPlayer(turnIndex).getName(),choosenCol); ///////////  6.8.18
                         isWinner = gameBoard.checkPlayerWin();
                         if(isWinner)
                         {
@@ -117,6 +120,7 @@ public class Game {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput,currPlayer);
+                        history.addToHistory(currPlayer.getName(),userInput); ////////////////////////// 6.8.18
                         isWinner = gameBoard.checkPlayerWin();
                         if(isWinner)
                         {
@@ -138,12 +142,27 @@ public class Game {
             }
             case 5:
             {
-                // TODO: call print history function
+                printHistory();
                 break;
             }
             case 6:
             {
                 //TODO: save game to file and exit
+                System.out.println("You gonna exit the game, do you want save the game?");
+                System.out.println("press 1 for exit, 2 for save.");
+                int input = getInputFromUser(1,2);
+                if (input == 2){
+                    System.out.println("The game will saved in D:\\JavaProj\\Ex1 exampels.");
+                    System.out.println(" for change the direction press 2 otherwise press 1");
+                    int secondInput = getInputFromUser(1,2);
+                    if (secondInput == 2 ){
+                        Scanner inputPath = new Scanner(System.in);
+                        String path = inputPath.nextLine();
+                        String newFile = path + " game 1.txt";
+                        // todo : save gamr to file 
+                    }
+                }
+
                 break;
             }
 
@@ -308,6 +327,16 @@ public class Game {
         }
         finally{
             return num;
+        }
+    }
+
+    public void printHistory (){
+        List<String> gHistory = history.getHistory();
+        System.out.println();
+        System.out.println("Moves history:");
+        for(String s: gHistory)
+        {
+            System.out.println(s);
         }
     }
 }

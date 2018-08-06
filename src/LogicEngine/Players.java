@@ -46,7 +46,7 @@ public class Players {
         return res;
     }
 
-    public void computerPlays(GameBoard gameBoard)
+    public int computerPlays(GameBoard gameBoard)
     {
         Random rand = new Random();
         int numOfCols = (int) gameBoard.getCols()-1;
@@ -66,5 +66,6 @@ public class Players {
                 gameBoard.setSignOnBoard(choosenCol,player);
             }
         }
+        return choosenCol;
     }
 }

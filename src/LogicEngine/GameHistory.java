@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameHistory {
-    List<String> history = new ArrayList<>();
+    List<String> history;
 
-    public void addToHistory ( int numOfPlayer, int theColumn){
-        history.add("Player " + numOfPlayer + ": " + theColumn);
+    public GameHistory(){
+       history = new ArrayList<>();
+    }
+
+    public List<String> getHistory() {
+        return history;
+    }
+
+    public void addToHistory (String numOfPlayer, int theColumn){
+        history.add(numOfPlayer + ": " + theColumn);
     }
 
     public void eraseLastMove (){
         history.remove(history.size() - 1);
     }
 
-    public void printHistory (){
-        System.out.println();
-        System.out.println("Move history:");
-        for(String s: history)
-        {
-            System.out.println(s);
-        }
-    }
 
     public void resetHistory () {
         history = new ArrayList<>();

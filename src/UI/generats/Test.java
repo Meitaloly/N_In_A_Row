@@ -17,6 +17,12 @@ public class Test {
 
 
     public static void main(String[] args) {
+
+        int len;
+        int res = 0;
+        String blabla = " player 1";
+        len = blabla.length();
+        res = blabla.charAt(len-1);
         }
 
 
