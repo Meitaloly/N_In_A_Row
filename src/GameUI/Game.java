@@ -4,6 +4,8 @@ import LogicEngine.*;
 
 import java.util.*;
 
+import static javafx.application.Platform.exit;
+
 public class Game {
     private Menu menu;
     private GameBoard gameBoard;
@@ -93,9 +95,9 @@ public class Game {
                         System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
                     }
                     System.out.println("Game timer: " + gameTimer.getTime());
-                    menu.printMenu();
-                    getUserMenuChoice();
                 }
+                menu.printMenu();
+                getUserMenuChoice();
             break;
             }
             case 4:
@@ -104,51 +106,64 @@ public class Game {
                 if(activeGame) {
                     if (players.isComputerTurn(turnIndex)) {
                         int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
+                        players.getCurrPlayer(turnIndex).setTurnCounter();
                         history.addToHistory(players.getCurrPlayer(turnIndex).getName(),choosenCol); ///////////  6.8.18
-                        isWinner = gameBoard.checkPlayerWin(choosenCol);
+                        isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
                         if(isWinner)
                         {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
                         }
-                        changeTurn();
-                        printBoard();
-                        menu.printMenu();
-                        getUserMenuChoice();
                     }
                     else // not computer
                     {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput,currPlayer);
+                        players.getCurrPlayer(turnIndex).setTurnCounter();
                         history.addToHistory(currPlayer.getName(),userInput); ////////////////////////// 6.8.18
-                        isWinner = gameBoard.checkPlayerWin(userInput);
+                        isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
                         if(isWinner)
                         {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
+                            System.exit(0);
                         }
+                    }
+                    if (gameBoard.getNumOfFreePlaces() == 0) {
+                        System.out.println("No one won - the board is full!");
+                        System.exit(0);
+                    }
+                    else
+                    {
                         changeTurn();
                         printBoard();
                         menu.printMenu();
                         getUserMenuChoice();
                     }
-                    if (gameBoard.getNumOfFreePlaces() == 0) {
-                        System.out.println("No one won - the board is full!");
-                        activeGame= false;
-                        menu.printMenu();
-                        getUserMenuChoice();
-                    }
+                }
+                else
+                {
+                    System.out.println("Can't play player turn! Game isn't active yet!");
+                    menu.printMenu();
+                    getUserMenuChoice();
                 }
                 break;
             }
             case 5:
             {
-                printHistory();
+                if(activeGame){
+                    printHistory();
+                }
+                else {
+                    System.out.println("There is no history! Game isn't active yet!");
+                }
+                menu.printMenu();
+                getUserMenuChoice();
                 break;
             }
             case 6:
             {
                 //TODO: save game to file and exit
-               /* System.out.println("You gonna exit the game, do you want save the game?");
+                System.out.println("You gonna exit the game, do you want save the game?");
                 System.out.println("press 1 for exit, 2 for save.");
                 int input = getInputFromUser(1,2);
                 if (input == 2){
@@ -159,13 +174,14 @@ public class Game {
                         Scanner inputPath = new Scanner(System.in);
                         String path = inputPath.nextLine();
                         String newFile = path + " game 1.txt";
-
+                         
                     }
-                }*/
+
+                }
+                System.exit(0);
 
                 break;
             }
-
         }
     }
 
@@ -224,7 +240,7 @@ public class Game {
                 player.setPlayerType(userChoice);
             }
             else {
-                System.out.println("Player" + (i+1) + " is Setted up!");
+                System.out.println("Player " + (i+1) + " is Setted up!");
                 player.setPlayerType(1); // player is human
             }
             players.setNewPlayer(i,player);
