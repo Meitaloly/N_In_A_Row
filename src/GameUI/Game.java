@@ -35,7 +35,7 @@ public class Game {
         int userChoice = 0;
 
         do {
-            userChoice = getInputFromUser(1,6);
+            userChoice = getInputFromUser(1, 6);
         } while (userChoice == 0);
 
         switch (userChoice) {
@@ -68,8 +68,7 @@ public class Game {
             case 2: {
                 System.out.println();
                 System.out.println("Starting a new game :)");
-                if(activeGame)
-                {
+                if (activeGame) {
                     timer.cancel();
                     gameTimer.cancel();
                     timer = new Timer();
@@ -83,14 +82,12 @@ public class Game {
                 getUserMenuChoice();
                 break;
             }
-            case 3:
-            {
+            case 3: {
                 printBoard();
-                if(activeGame)
-                {
+                if (activeGame) {
                     Player currPlayer = players.getCurrPlayer(turnIndex);
                     System.out.println("it's " + currPlayer.getName() + " turn");
-                    for(Player player: players.getPlayers().values()) {
+                    for (Player player : players.getPlayers().values()) {
                         System.out.println("The sign of " + player.getName() + " is: " + player.getPlayerSign());
                         System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
                     }
@@ -98,32 +95,36 @@ public class Game {
                 }
                 menu.printMenu();
                 getUserMenuChoice();
-            break;
+                break;
             }
-            case 4:
-            {
+            case 4: {
                 boolean isWinner;
-                if(activeGame) {
+                if (activeGame) {
                     if (players.isComputerTurn(turnIndex)) {
                         int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
                         players.getCurrPlayer(turnIndex).setTurnCounter();
-                        history.addToHistory(players.getCurrPlayer(turnIndex).getName(),choosenCol); ///////////  6.8.18
-                        isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
-                        if(isWinner)
-                        {
+                        history.addToHistory(players.getCurrPlayer(turnIndex).getName(), choosenCol); ///////////  6.8.18
+
+                        isWinner = gameBoard.checkPlayerWin(choosenCol);
+
+                        //isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
+
+                        if (isWinner) {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
                         }
-                    }
-                    else // not computer
+                    } else // not computer
                     {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
-                        gameBoard.setSignOnBoard(userInput,currPlayer);
+                        gameBoard.setSignOnBoard(userInput, currPlayer);
                         players.getCurrPlayer(turnIndex).setTurnCounter();
-                        history.addToHistory(currPlayer.getName(),userInput); ////////////////////////// 6.8.18
-                        isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
-                        if(isWinner)
-                        {
+                        history.addToHistory(currPlayer.getName(), userInput); ////////////////////////// 6.8.18
+
+                        isWinner = gameBoard.checkPlayerWin(userInput);
+
+                        // isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
+
+                        if (isWinner) {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
                             System.exit(0);
                         }
@@ -131,39 +132,32 @@ public class Game {
                     if (gameBoard.getNumOfFreePlaces() == 0) {
                         System.out.println("No one won - the board is full!");
                         System.exit(0);
-                    }
-                    else
-                    {
+                    } else {
                         changeTurn();
                         printBoard();
                         menu.printMenu();
                         getUserMenuChoice();
                     }
-                }
-                else
-                {
+                } else {
                     System.out.println("Can't play player turn! Game isn't active yet!");
                     menu.printMenu();
                     getUserMenuChoice();
                 }
                 break;
             }
-            case 5:
-            {
-                if(activeGame){
+            case 5: {
+                if (activeGame) {
                     printHistory();
-                }
-                else {
+                } else {
                     System.out.println("There is no history! Game isn't active yet!");
                 }
                 menu.printMenu();
                 getUserMenuChoice();
                 break;
             }
-            case 6:
-            {
+            case 6: {
                 //TODO: save game to file and exit
-                System.out.println("You gonna exit the game, do you want save the game?");
+               /* System.out.println("You gonna exit the game, do you want save the game?");
                 System.out.println("press 1 for exit, 2 for save.");
                 int input = getInputFromUser(1,2);
                 if (input == 2){
@@ -174,16 +168,19 @@ public class Game {
                         Scanner inputPath = new Scanner(System.in);
                         String path = inputPath.nextLine();
                         String newFile = path + " game 1.txt";
-                         
+
                     }
+                }*/
 
-                }
-                System.exit(0);
 
-                break;
             }
+            System.exit(0);
+
+            break;
         }
     }
+
+
 
     public void changeTurn()
     {

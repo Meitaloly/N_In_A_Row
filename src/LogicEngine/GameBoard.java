@@ -75,11 +75,91 @@ public class GameBoard {
         return res;
     }
 
-    public boolean checkPlayerWin(char sign)
+    public boolean checkPlayerWin(int col)
     {
         boolean res = false;
-
+        int i = 1 ;
+        while (board[i][col] == 0){
+            i++;
+        }
+        res = isDiagonal(i,col) || isHorizontal(i,col) || isvertical(i,col);
         // check if won
+        return res;
+    }
+
+    public boolean isDiagonal(int row,int col){
+        boolean res = false;
+        long  len = target;
+        int mySign = board[row][col];
+        int newCol = col +1, newRow = row+1;
+
+        while (newCol <= cols && newRow <= rows && !res && board[row][newCol] == mySign ){
+
+        }
+
+        return res;
+    }
+
+    public boolean isHorizontal(int row,int col){
+        boolean res = false;
+        long  len = target;
+        int mySign = board[row][col];
+        int newCol = col +1;
+
+        while (newCol <= cols && !res && board[row][newCol] == mySign  ){
+            len--;
+            if (len > 0 ){
+                newCol++;
+            }
+            else if (len == 0){
+                res = true;
+            }
+        }
+
+        if (!res && len > 0 ){
+            newCol = col - 1;
+            while (newCol>=1 && !res && board[row][newCol] == mySign ){
+                len--;
+                if (len > 0 ){
+                    newCol--;
+                }
+                else if (len ==0){
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
+
+
+    public boolean isvertical(int row,int col){
+        boolean res = false;
+        long  len = target;
+        int mySign = board[row][col];
+        int newRow = row +1;
+
+        while (newRow >= 1 && !res && board[newRow][col] == mySign  ){
+            len--;
+            if (len > 0 ){
+                newRow++;
+            }
+            else if (len == 0){
+                res = true;
+            }
+        }
+
+        if (!res && len > 0 ){
+            newRow = row - 1;
+            while (newRow<=rows && !res && board[newRow][col] == mySign ){
+                len--;
+                if (len > 0 ){
+                    newRow--;
+                }
+                else if (len ==0){
+                    res = true;
+                }
+            }
+        }
         return res;
     }
 }
