@@ -55,7 +55,7 @@ public class GameBoard {
             {
                 board[i][columToPutIn] = player.getPlayerSign();
                 numOfFreePlaces--;
-                break;
+                return;
             }
         }
     }
@@ -74,10 +74,57 @@ public class GameBoard {
         return res;
     }
 
-    public boolean checkPlayerWin()
+    public boolean checkPlayerWin(int col )
     {
         boolean res = false;
+        int i = 1 ;
+        while (board[i][col] == 0){
+            i++;
+        }
+        res = isDiagonal(i,col) || isHorizontal(i,col) || isverticalertical(i,col);
         // check if won
+        return res;
+    }
+
+    public boolean isDiagonal(int row,int col){
+        boolean res = false;
+
+        return res;
+    }
+
+    public boolean isHorizontal(int row,int col){
+        boolean res = false;
+        long  len = target;
+        int mySign = board[row][col];
+        int newCol = col +1;
+
+        while (newCol <= cols && !res && board[row][newCol] == mySign  ){
+            len--;
+            if (len > 0 && board[row][newCol] == mySign ){
+                newCol++;
+            }
+            else if (len == 0){
+                res = true;
+            }
+        }
+
+        if (!res && len > 0 ){
+            newCol = col - 1;
+            while (newCol>=1 && !res){
+                if (len > 0 && board[row][newCol] == mySign ){
+                    len--;
+                    newCol--;
+                }
+                else if (len ==0){
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
+
+    public boolean isverticalertical(int row,int col){
+        boolean res = false;
         return res;
     }
 }

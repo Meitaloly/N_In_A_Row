@@ -105,7 +105,7 @@ public class Game {
                     if (players.isComputerTurn(turnIndex)) {
                         int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
                         history.addToHistory(players.getCurrPlayer(turnIndex).getName(),choosenCol); ///////////  6.8.18
-                        isWinner = gameBoard.checkPlayerWin();
+                        isWinner = gameBoard.checkPlayerWin(choosenCol);
                         if(isWinner)
                         {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
@@ -121,7 +121,7 @@ public class Game {
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput,currPlayer);
                         history.addToHistory(currPlayer.getName(),userInput); ////////////////////////// 6.8.18
-                        isWinner = gameBoard.checkPlayerWin();
+                        isWinner = gameBoard.checkPlayerWin(userInput);
                         if(isWinner)
                         {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
@@ -148,7 +148,7 @@ public class Game {
             case 6:
             {
                 //TODO: save game to file and exit
-                System.out.println("You gonna exit the game, do you want save the game?");
+               /* System.out.println("You gonna exit the game, do you want save the game?");
                 System.out.println("press 1 for exit, 2 for save.");
                 int input = getInputFromUser(1,2);
                 if (input == 2){
@@ -159,9 +159,9 @@ public class Game {
                         Scanner inputPath = new Scanner(System.in);
                         String path = inputPath.nextLine();
                         String newFile = path + " game 1.txt";
-                         
+
                     }
-                }
+                }*/
 
                 break;
             }
