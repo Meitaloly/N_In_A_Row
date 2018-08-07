@@ -14,7 +14,7 @@ public class GameBoard {
         rows = i_rows+1;
         cols = i_cols+1;
         target = i_target;
-        numOfFreePlaces = (int)rows * (int)cols;
+        numOfFreePlaces = (int)(rows-1) * (int)(cols-1);
         board = new int[Math.toIntExact(rows)][Math.toIntExact(cols)];
         buildTheBoard();
     }
@@ -55,6 +55,7 @@ public class GameBoard {
             {
                 board[i][columToPutIn] = player.getPlayerSign();
                 numOfFreePlaces--;
+                int j=0 ; // to check what the value of mumOfFreePlaces
                 break;
             }
         }
@@ -74,9 +75,10 @@ public class GameBoard {
         return res;
     }
 
-    public boolean checkPlayerWin()
+    public boolean checkPlayerWin(char sign)
     {
         boolean res = false;
+
         // check if won
         return res;
     }
