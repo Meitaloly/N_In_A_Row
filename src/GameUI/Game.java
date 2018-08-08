@@ -29,13 +29,14 @@ public class Game {
         gameBoard = new GameBoard();
         players = new Players();
         getUserMenuChoice();
+        return;
     }
 
     public void getUserMenuChoice() {
         int userChoice = 0;
 
         do {
-            userChoice = getInputFromUser(1, 6);
+            userChoice = getInputFromUser(1,7);
         } while (userChoice == 0);
 
         switch (userChoice) {
@@ -101,6 +102,7 @@ public class Game {
                 boolean isWinner;
                 if (activeGame) {
                     if (players.isComputerTurn(turnIndex)) {
+                        System.out.println(players.getCurrPlayer(turnIndex).getName() + " turn:");
                         int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
                         players.getCurrPlayer(turnIndex).setTurnCounter();
                         history.addToHistory(players.getCurrPlayer(turnIndex).getName(), choosenCol); ///////////  6.8.18
@@ -110,10 +112,17 @@ public class Game {
                         //isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
 
                         if (isWinner) {
+                            activeGame = false;
+                            printBoard();
+                            System.out.println();
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
+                            System.out.println();
+                            endGame();
+                            getUserMenuChoice();
                         }
                     } else // not computer
                     {
+                        System.out.println(players.getCurrPlayer(turnIndex).getName() + " turn:");
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput, currPlayer);
@@ -125,8 +134,13 @@ public class Game {
                         // isWinner = gameBoard.checkPlayerWin(players.getCurrPlayer(turnIndex).getPlayerSign());
 
                         if (isWinner) {
-                            System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
-                            System.exit(0);
+
+                            activeGame = false;
+                            printBoard();
+                            System.out.println();
+                            System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!\n");
+                            endGame();
+                            getUserMenuChoice();
                         }
                     }
                     if (gameBoard.getNumOfFreePlaces() == 0) {
@@ -155,7 +169,19 @@ public class Game {
                 getUserMenuChoice();
                 break;
             }
-            case 6: {
+            case 6:{
+                if (!history.isEmpty()) {
+                    undo(history.getLastMove());
+                    printBoard();
+                    menu.printMenu();
+                    getUserMenuChoice();
+                }
+                else {
+                    System.out.println("\nNo move yet, c'ant do undo");
+                }
+                break;
+            }
+            case 7: {
                 //TODO: save game to file and exit
                /* System.out.println("You gonna exit the game, do you want save the game?");
                 System.out.println("press 1 for exit, 2 for save.");
@@ -174,9 +200,8 @@ public class Game {
 
 
             }
-            System.exit(0);
-
-            break;
+            System.out.println("\nExit game, goodby.");
+            return ;
         }
     }
 
@@ -346,10 +371,42 @@ public class Game {
     public void printHistory (){
         List<String> gHistory = history.getHistory();
         System.out.println();
-        System.out.println("Moves history:");
-        for(String s: gHistory)
-        {
-            System.out.println(s);
+        if (gHistory.size() == 0){
+            System.out.println("No moves yet.");
         }
+        else {
+            System.out.println("Moves history:");
+            for (String s : gHistory) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    public void endGame(){
+        int input;
+        System.out.println();
+        System.out.println("THE GAME IS OVER.");
+        System.out.println("for reset game press 1.");
+        System.out.println("for exit press 2.");
+        input = getInputFromUser(1,2);
+        if (input == 1){
+            turnIndex = 0;
+            gameBoard.resetBoard();
+            history.resetHistory();
+            activeGame = true;
+        }
+        return ;
+    }
+
+    public void undo(int col){
+        int playerIndex = gameBoard.gameUndo(col);
+        if (playerIndex == 2){
+            turnIndex = 1;
+        }
+        else {
+            turnIndex = 0;
+        }
+        history.eraseLastMove();
+        players.getCurrPlayer(turnIndex).reduceTurnCounter();  // play the turn again
     }
 }

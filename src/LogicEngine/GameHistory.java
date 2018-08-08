@@ -34,6 +34,10 @@ public class GameHistory {
         return res;
     }
 
+    public boolean isEmpty(){
+        return (history.isEmpty());
+    }
+
 
 
 

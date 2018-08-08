@@ -31,6 +31,13 @@ public class GameBoard {
         }
     }
 
+    public void resetBoard(){
+        for (int i = 1; i < rows; i++) {
+            Arrays.fill(board[i], 0);
+            board[i][0] = i;
+        }
+    }
+
     public long getCols() {
         return cols;
     }
@@ -89,11 +96,62 @@ public class GameBoard {
 
     public boolean isDiagonal(int row,int col){
         boolean res = false;
-        long  len = target;
+        long  len = target-1;
         int mySign = board[row][col];
         int newCol = col +1, newRow = row+1;
 
-        while (newCol <= cols && newRow <= rows && !res && board[row][newCol] == mySign ){
+        while (newCol <= cols-1 && newRow <= rows-1 && !res && board[newRow][newCol] == mySign ){  //go down rigth
+            len--;
+            if (len > 0 ){
+                newCol++;
+                newRow++;
+            }
+            else if (len == 0){
+                res = true;
+            }
+        }
+        if (!res && len > 0 ){
+            newCol = col - 1;
+            newRow = row -1;
+            while (newCol>=1 && newRow >= 1 && !res && board[newRow][newCol] == mySign ){
+                len--;
+                if (len > 0 ){
+                    newCol--;
+                    newRow--;
+                }
+                else if (len ==0){
+                    res = true;
+                }
+            }
+        }
+        if (!res){
+            newCol = col + 1;
+            newRow = row - 1;
+
+            while (newCol <= cols-1 && newRow >= 1 && !res && board[newRow][newCol] == mySign ){  //go down rigth
+                len--;
+                if (len > 0 ){
+                    newCol++;
+                    newRow--;
+                }
+                else if (len == 0){
+                    res = true;
+                }
+            }
+            if (!res && len > 0 ){
+                newCol = col - 1;
+                newRow = row  + 1;
+                while (newCol >= 1 && newRow <= rows-1 && !res && board[newRow][newCol] == mySign ){
+                    len--;
+                    if (len > 0 ){
+                        newCol--;
+                        newRow++;
+                    }
+                    else if (len ==0){
+                        res = true;
+                    }
+                }
+            }
 
         }
 
@@ -102,11 +160,11 @@ public class GameBoard {
 
     public boolean isHorizontal(int row,int col){
         boolean res = false;
-        long  len = target;
+        long  len = target-1;
         int mySign = board[row][col];
         int newCol = col +1;
 
-        while (newCol <= cols && !res && board[row][newCol] == mySign  ){
+        while (newCol <= cols-1 && !res && board[row][newCol] == mySign  ){
             len--;
             if (len > 0 ){
                 newCol++;
@@ -134,11 +192,11 @@ public class GameBoard {
 
     public boolean isvertical(int row,int col){
         boolean res = false;
-        long  len = target;
+        long  len = target-1;
         int mySign = board[row][col];
         int newRow = row +1;
 
-        while (newRow >= 1 && !res && board[newRow][col] == mySign  ){
+        while (newRow <= rows-1 && !res && board[newRow][col] == mySign ){
             len--;
             if (len > 0 ){
                 newRow++;
@@ -150,7 +208,7 @@ public class GameBoard {
 
         if (!res && len > 0 ){
             newRow = row - 1;
-            while (newRow<=rows && !res && board[newRow][col] == mySign ){
+            while (newRow >= 1  && !res && board[newRow][col] == mySign ){
                 len--;
                 if (len > 0 ){
                     newRow--;
@@ -160,6 +218,23 @@ public class GameBoard {
                 }
             }
         }
+        return res;
+    }
+
+    public int gameUndo(int col){
+        int i = 1 ;
+        int res;
+        while (board[i][col] == 0){
+            i++;
+        }
+        if (board[i][col] == 35){
+            res = 2;
+        }
+        else{
+            res = 1;
+        }
+        board[i][col] = 0;
+        numOfFreePlaces --;
         return res;
     }
 }
