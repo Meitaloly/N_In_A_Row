@@ -13,7 +13,9 @@ public class Menu {
         menu.add("Show game info");
         menu.add("Play turn");
         menu.add("Show history");
-        menu.add("Undo");
+        menu.add("Undo last move");
+        menu.add("Save current game");
+        menu.add("Load last saved game");
         menu.add("Exit");
     }
 

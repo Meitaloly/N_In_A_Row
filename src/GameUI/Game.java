@@ -2,6 +2,7 @@ package GameUI;
 
 import LogicEngine.*;
 
+import java.io.*;
 import java.util.*;
 
 import static javafx.application.Platform.exit;
@@ -16,10 +17,12 @@ public class Game {
     private GameTimer gameTimer;
     private Timer timer;
     private GameHistory history;
+    private boolean savedGamedLoaded = false;
+    private boolean loadedBoard = false;
+
 
     public Game() {
         menu = new Menu();
-        history = new GameHistory();
     }
 
     public void start() {
@@ -28,15 +31,25 @@ public class Game {
         menu.printMenu();
         gameBoard = new GameBoard();
         players = new Players();
+        history = new GameHistory();
         getUserMenuChoice();
         return;
+    }
+
+    public void resetTheGame()
+    {
+        turnIndex = 0;
+        savedGamedLoaded=false;
+        loadedBoard =false;
+        activeGame = false;
+        start();
     }
 
     public void getUserMenuChoice() {
         int userChoice = 0;
 
         do {
-            userChoice = getInputFromUser(1,7);
+            userChoice = getInputFromUser(1,9);
         } while (userChoice == 0);
 
         switch (userChoice) {
@@ -56,7 +69,10 @@ public class Game {
                     }
 
                     System.out.println("File was loaded!");
+                    loadedBoard = true;
                     printBoard();
+                    System.out.println("The target is: " + gameBoard.getTarget());
+                    System.out.println("The game is: " + (activeGame?"active":"not active"));
                     menu.printMenu();
                     getUserMenuChoice();
                 } else {
@@ -67,32 +83,50 @@ public class Game {
                 break;
             }
             case 2: {
-                System.out.println();
-                System.out.println("Starting a new game :)");
-                if (activeGame) {
-                    timer.cancel();
-                    gameTimer.cancel();
-                    timer = new Timer();
-                    gameTimer = new GameTimer();
-                    players.rest();
+                if(loadedBoard) {
+                    if (activeGame) {
+                        System.out.println();
+                        System.out.println("Starting the game :)");
+                        timer.cancel();
+                        gameTimer.cancel();
+                        timer = new Timer();
+                        gameTimer = new GameTimer();
+                        history.resetHistory();
+                        players.rest();
+                        gameBoard.reset(); //TODO
+                        turnIndex =0;
+                    }
+                    getPlayersTypeFromUser();
+                    savedGamedLoaded = false;
+                    activeGame = true;
+                    timer.schedule(gameTimer, 0, 1000);
                 }
-                activeGame = true;
-                timer.schedule(gameTimer, 0, 1000);
-                getPlayersTypeFromUser();
+                else
+                {
+                    System.out.println("Can't start without loading game first!");
+                }
                 menu.printMenu();
                 getUserMenuChoice();
                 break;
             }
             case 3: {
-                printBoard();
-                if (activeGame) {
-                    Player currPlayer = players.getCurrPlayer(turnIndex);
-                    System.out.println("it's " + currPlayer.getName() + " turn");
-                    for (Player player : players.getPlayers().values()) {
-                        System.out.println("The sign of " + player.getName() + " is: " + player.getPlayerSign());
-                        System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
+                if(loadedBoard) {
+                    printBoard();
+                    System.out.println("The target is: " + gameBoard.getTarget());
+                    System.out.println("The game is: " + (activeGame ? "active" : "not active"));
+                    if (activeGame) {
+                        Player currPlayer = players.getCurrPlayer(turnIndex);
+                        System.out.println("it's " + currPlayer.getName() + " turn");
+                        for (Player player : players.getPlayers().values()) {
+                            System.out.println("The sign of " + player.getName() + " is: " + player.getPlayerSign());
+                            System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
+                        }
+                        System.out.println("Game timer: " + gameTimer.getTime());
                     }
-                    System.out.println("Game timer: " + gameTimer.getTime());
+                }
+                else
+                {
+                    System.out.println("No board was loaded yet!");
                 }
                 menu.printMenu();
                 getUserMenuChoice();
@@ -104,7 +138,7 @@ public class Game {
                     if (players.isComputerTurn(turnIndex)) {
                         System.out.println(players.getCurrPlayer(turnIndex).getName() + " turn:");
                         int choosenCol = players.computerPlays(gameBoard); ////////// change 6.8.18
-                        players.getCurrPlayer(turnIndex).setTurnCounter();
+                        players.getCurrPlayer(turnIndex).incTurnCounter();
                         history.addToHistory(players.getCurrPlayer(turnIndex).getName(), choosenCol); ///////////  6.8.18
 
                         isWinner = gameBoard.checkPlayerWin(choosenCol);
@@ -118,7 +152,6 @@ public class Game {
                             System.out.println(players.getCurrPlayer(turnIndex).getName() + " WON!!");
                             System.out.println();
                             endGame();
-                            getUserMenuChoice();
                         }
                     } else // not computer
                     {
@@ -126,7 +159,7 @@ public class Game {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         int userInput = getTurnInputFromUser(currPlayer);
                         gameBoard.setSignOnBoard(userInput, currPlayer);
-                        players.getCurrPlayer(turnIndex).setTurnCounter();
+                        players.getCurrPlayer(turnIndex).incTurnCounter();
                         history.addToHistory(currPlayer.getName(), userInput); ////////////////////////// 6.8.18
 
                         isWinner = gameBoard.checkPlayerWin(userInput);
@@ -177,35 +210,155 @@ public class Game {
                     getUserMenuChoice();
                 }
                 else {
-                    System.out.println("\nNo move yet, c'ant do undo");
+                    System.out.println("\nNo moves yet, can't do undo");
+                    menu.printMenu();
+                    getUserMenuChoice();
                 }
                 break;
             }
             case 7: {
-                //TODO: save game to file and exit
-               /* System.out.println("You gonna exit the game, do you want save the game?");
-                System.out.println("press 1 for exit, 2 for save.");
-                int input = getInputFromUser(1,2);
-                if (input == 2){
-                    System.out.println("The game will saved in D:\\JavaProj\\Ex1 exampels.");
-                    System.out.println(" for change the direction press 2 otherwise press 1");
-                    int secondInput = getInputFromUser(1,2);
-                    if (secondInput == 2 ){
-                        Scanner inputPath = new Scanner(System.in);
-                        String path = inputPath.nextLine();
-                        String newFile = path + " game 1.txt";
-
-                    }
-                }*/
-
-
+                if(activeGame)
+                {
+                    SaveGameToFile();
+                    System.out.println("Game saved Successfully");
+                }
+                else
+                {
+                    System.out.println("There is no active game yet!");
+                }
+                menu.printMenu();
+                getUserMenuChoice();
+            break;
             }
-            System.out.println("\nExit game, goodby.");
-            return ;
+            case 8: {
+                if(!activeGame) {
+                    if (LoadSavedGameFromFile()) {
+                        activeGame = true;
+                        System.out.println("Saved game loaded successfully!");
+                        savedGamedLoaded = true;
+                        loadedBoard = true;
+                        timer.schedule(gameTimer,0,1000);
+                    } else {
+                        System.out.println("There is no saved game yet!");
+                    }
+                }
+                else
+                {
+                    System.out.println("Can't load saved game during active game!");
+                }
+                menu.printMenu();
+                getUserMenuChoice();
+                break;
+            }
+            case 9: {
+                boolean noValidInput = true;
+                System.out.println("Are you sure you want to exit the game ?");
+                System.out.println("press 'Y' to exit press 'N' to keep playing");
+                Scanner s = new Scanner(System.in);
+                do {
+                    String input = s.nextLine().toUpperCase();
+                    if (input.equals("N")) {
+                        noValidInput = true;
+                        menu.printMenu();
+                        getUserMenuChoice();
+                    } else if (input.equals("Y")) {
+                        noValidInput = true;
+                        System.exit(0);
+                    } else {
+                        System.out.println("You must press 'Y' or 'N' only!");
+                        System.out.println("press 'Y' to exit press 'N' to keep playing");
+                    }
+                }while(noValidInput);
+                break;
+            }
         }
     }
 
+    //TODO: from here to changeTurn()
+    private boolean LoadSavedGameFromFile() {
+        boolean res = false;
+        File saveGameFile = new File("savedGame.txt");
+        if (saveGameFile.exists()) {
+            res=true;
+            Scanner reader = null;
+            try {
+                reader = new Scanner(saveGameFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            gameBoard.setTarget(strToInt(reader));
+            readPlayersDataFromFile(reader);
+            turnIndex = strToInt(reader);
+            readBoardDataFromFile(reader);
+            readHistoryFromFile(reader);
+        }
+        return res;
+    }
 
+    private void readHistoryFromFile(Scanner reader)
+    {
+        history.resetHistory();
+        int lenHistory = strToInt(reader);
+        for(int i=0; i< lenHistory; i++)
+        {
+            history.getHistory().add(reader.nextLine());
+        }
+    }
+
+    private void readBoardDataFromFile(Scanner reader)
+    {
+        int rows = strToInt(reader);
+        int cols = strToInt(reader);
+        String subStr = null;
+        int index =0;
+        gameBoard.setRows(rows);
+        gameBoard.setCols(cols);
+        gameBoard.setEmptyBoard();
+        gameBoard.resetNumOfFreePlaces();
+        for(int i=0; i<rows; i++)
+        {
+            String str = reader.nextLine();
+            for(int j=0; j<cols; j++)
+            {
+                if(j!=cols-1) {
+                    index = str.indexOf(",");
+                    subStr = str.substring(0,index);
+                }
+                else
+                {
+                    subStr=str;
+                }
+                int value = Integer.parseInt(subStr);
+                gameBoard.setCubeInBoard(i,j,value);
+                if(j!=cols-1) {
+                    str = str.substring(index + 1, str.length());
+                }
+            }
+        }
+
+    }
+
+    private void readPlayersDataFromFile(Scanner reader)
+    {
+        players.rest();
+        int numOfPlayers = strToInt(reader);
+        for(int i =0 ; i<numOfPlayers ;i++)
+        {
+            Player player = new Player();
+            player.setId(strToInt(reader));
+            player.setName(reader.nextLine());
+            player.setPlayerType(strToInt(reader));
+            player.setPlayerSign(reader.nextLine().charAt(0));
+            player.setTurnCounter(strToInt(reader));
+            players.getPlayers().put(player.getId(),player);
+        }
+    }
+
+    private int strToInt(Scanner reader)
+    {
+        String str = reader.nextLine();
+        return Integer.parseInt(str);
+    }
 
     public void changeTurn()
     {
@@ -307,8 +460,6 @@ public class Game {
             System.out.println();
         }
         System.out.println();
-        System.out.println("The target is: " + target);
-        System.out.println("The game is: " + (activeGame?"active":"not active"));
     }
 
     private void PrintErrorXMLFILE(int num)
@@ -355,13 +506,13 @@ public class Game {
             num = Integer.parseInt(res);
             if(num < min || num > max){
                 System.out.println("Invalid input - NUMBER NOT IN RANGE!)");
-                System.out.println("Please enter a number between "+min +"to" + max+":");
+                System.out.println("Please enter a number between "+min +" to " + max+":");
                 num = 0;
             }
         }
         catch(Exception e) {
             System.out.println("Invalid input - YOU MUST ENTER A NUMBER!");
-            System.out.println("Please enter a number between "+ min +"to" + max+":");
+            System.out.println("Please enter a number between "+ min +" to " + max+":");
         }
         finally{
             return num;
@@ -382,21 +533,117 @@ public class Game {
         }
     }
 
+    //TODO: from here to endGame
+    public void SaveGameToFile()
+    {
+        String fileName = "savedGame.txt";
+        File f = new File(fileName);
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(fileName, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        writer.println(gameBoard.getTarget());
+        writePlayerToFile(writer);
+        writer.println(turnIndex);
+        writeBoardDataToFile(writer);
+        writeHistoryToFile(writer);
+        writer.close();
+    }
+
+    private void writeHistoryToFile(PrintWriter writer)
+    {
+        int lenHistory = history.getHistory().size();
+        writer.println(lenHistory);
+        for(String str :history.getHistory())
+        {
+            writer.println(str);
+        }
+    }
+
+    private void writeBoardDataToFile(PrintWriter writer)
+    {
+        long rows = gameBoard.getRows();
+        long cols = gameBoard.getCols();
+        int [][] board = gameBoard.getBoard();
+        writer.println(rows);
+        writer.println(cols);
+
+        for(int i = 0; i<rows;i++)
+        {
+            for(int j=0; j<cols; j++)
+            {
+                writer.print(board[i][j]);
+                if(j!=cols-1)
+                {
+                    writer.print(',');
+                }
+            }
+            writer.println();
+        }
+    }
+
+    private void writePlayerToFile(PrintWriter writer)
+    {
+        int lenOfPlayers =players.getPlayers().size();
+        writer.println(lenOfPlayers);
+        for(Player player : players.getPlayers().values())
+        {
+            writer.println(player.getId());
+            writer.println(player.getName());
+            writer.println(player.getPlayerType());
+            writer.println(player.getPlayerSign());
+            writer.println(player.getTurnCounter());
+        }
+    }
+
     public void endGame(){
         int input;
         System.out.println();
         System.out.println("THE GAME IS OVER.");
         System.out.println("for reset game press 1.");
-        System.out.println("for exit press 2.");
-        input = getInputFromUser(1,2);
+        System.out.println("for exit and back to menu press 2.");
+        do {
+            input = getInputFromUser(1,2);
+        }while(input == 0);
+
         if (input == 1){
             turnIndex = 0;
             gameBoard.resetBoard();
             history.resetHistory();
+            turnIndex = 0;
+            timer.cancel();
+            gameTimer.cancel();
+            timer = new Timer();
+            gameTimer = new GameTimer();
+            timer.schedule(gameTimer, 0, 1000);
             activeGame = true;
+            resetPlayersNumOfTurns();
         }
-        return ;
+        else
+        {
+            resetTheGame();
+        }
+        menu.printMenu();
+        getUserMenuChoice();
     }
+
+    public void resetPlayersNumOfTurns() {
+        for(Player player : players.getPlayers().values())
+        {
+            player.setTurnCounter(0);
+        }
+    }
+
 
     public void undo(int col){
         int playerIndex = gameBoard.gameUndo(col);

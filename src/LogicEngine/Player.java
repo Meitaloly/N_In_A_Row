@@ -45,8 +45,13 @@ public class Player {
         }
     }
 
-    public void setTurnCounter() {
+    public void incTurnCounter()
+    {
         this.turnCounter++;
+    }
+
+    public void setTurnCounter(int num) {
+        this.turnCounter = num;
     }
 
     public void reduceTurnCounter(){

@@ -19,6 +19,11 @@ public class GameBoard {
         buildTheBoard();
     }
 
+    public void setEmptyBoard()
+    {
+        board = new int[Math.toIntExact(rows)][Math.toIntExact(cols)];
+    }
+
     public void buildTheBoard() {
 
         for (int i = 0; i < cols; i++) {
@@ -36,6 +41,32 @@ public class GameBoard {
             Arrays.fill(board[i], 0);
             board[i][0] = i;
         }
+    }
+    public void setTarget(long target) {
+        this.target = target;
+    }
+
+    public void reset() {
+        buildTheBoard();
+        numOfFreePlaces = (int) (rows - 1) * (int) (cols - 1);
+    }
+
+
+    public void resetNumOfFreePlaces() {
+        numOfFreePlaces = (int) (rows - 1) * (int) (cols - 1);
+    }
+
+    public void setCols(long cols) {
+        this.cols = cols;
+    }
+
+    public void setRows(long rows) {
+        this.rows = rows;
+    }
+
+    public void setCubeInBoard(int row,int col, int value)
+    {
+        this.board[row][col] = value;
     }
 
     public long getCols() {
