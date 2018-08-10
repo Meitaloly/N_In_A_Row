@@ -3,9 +3,9 @@ package GameUI;
 import LogicEngine.*;
 
 import java.io.*;
-import java.util.*;
-
-import static javafx.application.Platform.exit;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Timer;
 
 public class Game {
     private Menu menu;
