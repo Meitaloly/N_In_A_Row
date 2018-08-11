@@ -118,6 +118,7 @@ public class Game {
                         Player currPlayer = players.getCurrPlayer(turnIndex);
                         System.out.println("it's " + currPlayer.getName() + " turn");
                         for (Player player : players.getPlayers().values()) {
+                            System.out.println(player.getName() + " is: " + (player.getPlayerType()==1?"Human":"Computer"));
                             System.out.println("The sign of " + player.getName() + " is: " + player.getPlayerSign());
                             System.out.println("Number of turns for " + player.getName() + " is: " + player.getTurnCounter());
                         }
@@ -220,6 +221,7 @@ public class Game {
                 if(activeGame)
                 {
                     SaveGameToFile();
+                    printBoard();
                     System.out.println("Game saved Successfully");
                 }
                 else

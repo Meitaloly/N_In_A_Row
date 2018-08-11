@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/GameUI/GameUI.iml" filepath="$PROJECT_DIR$/GameUI/GameUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/LogicEngine/LogicEngine.iml" filepath="$PROJECT_DIR$/LogicEngine/LogicEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/N_In_A_Row.iml" filepath="$PROJECT_DIR$/N_In_A_Row.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" />
     </modules>
   </component>
 </project>
